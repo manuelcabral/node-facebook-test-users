@@ -1,0 +1,35 @@
+{
+  "name": "node-facebook-test-users",
+  "version": "0.0.0",
+  "description": "Node module to create and delete Facebook test users",
+  "main": "dist/FacebookTestUsers.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/tests.coffee",
+    "prepublish": "coffee -c -o dist src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/manuelcabral/node-facebook-test-users.git"
+  },
+  "keywords": [
+    "facebook",
+    "testing",
+    "users",
+    "test"
+  ],
+  "author": "Digisfera",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "582a2204193ab1d1c8b7c7c76227986903414faa",
+  "devDependencies": {
+    "chai": "~1.6.0",
+    "mocha": "~1.9.0",
+    "coffee-script": "~1.6.2"
+  },
+  "dependencies": {
+    "request": "~2.21.0"
+  }
+}
