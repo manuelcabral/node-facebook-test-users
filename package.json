@@ -1,6 +1,6 @@
 {
-  "name": "node-facebook-test-users",
-  "version": "0.0.0",
+  "name": "facebook-test-users",
+  "version": "0.0.3",
   "description": "Node module to create and delete Facebook test users",
   "main": "dist/FacebookTestUsers.js",
   "directories": {
@@ -27,7 +27,8 @@
   "devDependencies": {
     "chai": "~1.6.0",
     "mocha": "~1.9.0",
-    "coffee-script": "~1.6.2"
+    "coffee-script": "~1.6.2",
+    "async": "~0.2.8"
   },
   "dependencies": {
     "request": "~2.21.0"
