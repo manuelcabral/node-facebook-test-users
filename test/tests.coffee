@@ -12,6 +12,9 @@ describe 'FacebookTestUsers', ->
   before -> 
     facebookTestUsers = new FacebookTestUsers(appcredentials.app_id, appcredentials.app_secret)
 
+  after (done) ->
+    facebookTestUsers.deleteAll (err, success) -> done()
+
   it 'should retrieve an app token', (done) ->
     facebookTestUsers.getAppToken (err, success) ->
       expect(err).to.not.ok
@@ -57,3 +60,30 @@ describe 'FacebookTestUsers', ->
 
           async.each user_ids, facebookTestUsers.delete, (err) ->
               done()
+
+  it 'should delete all users', (done) ->
+    async.times 2,
+      ((n, next) ->
+        facebookTestUsers.create(next)),
+      (e, users) ->
+        facebookTestUsers.deleteAll (err, success) ->
+          expect(err).to.be.not.ok
+          expect(success).to.be.ok
+          facebookTestUsers.fetch (err, fetched_users) ->
+            expect(fetched_users.length).to.equal(0)
+            done()
+
+  it 'should delete all recently created users', (done) ->
+    facebookTestUsers.create (err, pastUser) ->
+      newFacebookTestUsers = new FacebookTestUsers(appcredentials.app_id, appcredentials.app_secret)
+      newFacebookTestUsers.create (err, recentUser) ->
+        newFacebookTestUsers.deleteAllRecentlyCreated (err, success) ->
+          expect(err).to.be.not.ok
+          expect(success).to.be.ok
+
+          facebookTestUsers.fetch (err, fetched_users) ->
+            user_ids = for user in fetched_users then user.id
+            for user in fetched_users
+              expect(user_ids).to.include(pastUser.id)
+              expect(user_ids).to.not.include(recentUser.id)
+            done()

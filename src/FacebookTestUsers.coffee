@@ -1,9 +1,11 @@
 qs = require('querystring')
 request = require('request')
+async = require('async')
 
 class FacebookTestUsers
 
-    constructor: (@app_id, @app_secret) -> 
+    constructor: (@app_id, @app_secret) ->  
+        @createdUsers = []
 
     getAppToken: (callback) ->
         if @app_token then callback(null, @app_token)
@@ -34,9 +36,11 @@ class FacebookTestUsers
                     access_token: app_token 
                 json: true
 
-            request.post create_query, (e, r, body) ->
-                if !e && r.statusCode == 200 then callback(null, body)
-                else callback(e || body, null)
+            request.post create_query, (e, r, user) =>
+                if !e && r.statusCode == 200
+                    @createdUsers.push user.id
+                    callback(null, user)
+                else callback(e || user, null)
 
     validateUserToken: (user_token, callback) ->
         validate_query =
@@ -57,8 +61,10 @@ class FacebookTestUsers
                     access_token: app_token
                 json: true
 
-            request.del delete_query, (e, r, body) ->
-                if !e && r.statusCode == 200 then callback(null, body)
+            request.del delete_query, (e, r, body) =>
+                if !e && r.statusCode == 200
+                    @createdUsers.filter (userId) -> userId != user_id 
+                    callback(null, body)
                 else callback(e || body, null)
 
     fetch: (callback) ->
@@ -72,5 +78,18 @@ class FacebookTestUsers
             request.get access_query, (e, r, body) ->
                 if !e && r.statusCode == 200 then callback(null, body.data)
                 else callback(e || body, null)
+
+    deleteAll: (callback) ->
+        @fetch (err, existing_users) =>
+            user_ids = for user in existing_users then user.id
+            async.each user_ids, @delete, (err) -> 
+                if err? then return callback(err, null)
+                callback(null, true)
+
+    deleteAllRecentlyCreated: (callback) ->
+        user_ids = @createdUsers
+        async.each user_ids, @delete, (err) -> 
+            if err? then return callback(err, null)
+            callback(null, true)
 
 module.exports = FacebookTestUsers

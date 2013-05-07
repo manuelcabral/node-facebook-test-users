@@ -8,3 +8,5 @@ This node module has the following methods:
 * create(callback)
 * delete(user_id, callback)
 * fetch(callback)
+* deleteAll(callback)
+* deleteAllRecentlyCreated(callback)
