@@ -1,6 +1,6 @@
 {
   "name": "facebook-test-users",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Node module to create and delete Facebook test users",
   "main": "dist/FacebookTestUsers.js",
   "directories": {
